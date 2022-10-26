@@ -11,15 +11,6 @@ function cachingDecoratorNew(func) {
       return "Из кэша: " + objectInCache.value;
     }
 
-    // function wrapper(...args) {
-    //   const hash = args.join(",");
-    //   const object = cache.find((item) => item.hash === hash);
-  
-    //   if (object) {
-    //     console.log("Из кэша: " + object.value);
-    //     return "Из кэша: " + object.value;
-    //   }
-
     let result = func(...args); // в кэше результата нет - придётся считать
     cache.push({
       'hash': hash,
@@ -38,17 +29,25 @@ function cachingDecoratorNew(func) {
 
 // Задача 2
 
-function debounceDecoratorNew(func) {
-  let timer = null;
+function debounceDecoratorNew(func, delay) {
+  let timeOutId = null;
+  wrapper.allCount = 0;
+  wrapper.count = 0;
 
   function wrapper(...args) {
-    if (timer === null) {
+    wrapper.allCount++;
+
+    if (timeOutId === null) {
       func(...args);
-      clearTimeout(timer);
-      timer = setTimeout(() => func(...args), ms);
+      wrapper.count++;
     }
-    wrapper.count++;
+
+    clearTimeout(timeOutId);
+    timeOutId = setTimeout(() => {
+      wrapper.count++;
+      func(...args);
+    }, delay);
   }
-  wrapper.count = 0;
+
   return wrapper;
 }
