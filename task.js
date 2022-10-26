@@ -5,11 +5,20 @@ function cachingDecoratorNew(func) {
 
   function wrapper(...args) {
     const hash = args.join(','); // получаем правильный хэш
-    let objectInCache = cache.findIndex((item) => item.hash == hash); // ищем элемент, хэш которого равен нашему хэшу
-    if (objectInCache !== -1) { // если элемент не найден
-      console.log("Из кэша: " + cache[objectInCache].value); // индекс нам известен, по индексу в массиве лежит объект, как получить нужное значение?
-      return "Из кэша: " + cache[objectInCache].value;
+    let objectInCache = cache.find((item) => item.hash == hash); // ищем элемент, хэш которого равен нашему хэшу
+    if (objectInCache) { // если элемент не найден
+      console.log("Из кэша: " + objectInCache.value); // индекс нам известен, по индексу в массиве лежит объект, как получить нужное значение?
+      return "Из кэша: " + objectInCache.value;
     }
+
+    // function wrapper(...args) {
+    //   const hash = args.join(",");
+    //   const object = cache.find((item) => item.hash === hash);
+  
+    //   if (object) {
+    //     console.log("Из кэша: " + object.value);
+    //     return "Из кэша: " + object.value;
+    //   }
 
     let result = func(...args); // в кэше результата нет - придётся считать
     cache.push({
